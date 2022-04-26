@@ -1,0 +1,10 @@
+[
+  {
+    "customer": "BigCo",
+    "performances": [
+      { "palyID": "hamlet", "audience": 55 },
+      { "palyID": "as-like", "audience": 35 },
+      { "palyID": "othello", "audience": 40 }
+    ]
+  }
+]
