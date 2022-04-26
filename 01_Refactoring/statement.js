@@ -44,28 +44,38 @@ const usd = (aNumber) =>
     minimumFractionDigits: 2,
   }).format(aNumber / 100);
 
-const totalVolumeCredits = () => {
-  let volumeCredits = 0;
-  for (let perf of invoice.performances) {
-    volumeCredits += volumeCreditsFor(perf);
+const totalVolumeCredits = (data) =>
+  data.performances.reduce((total, p) => total + p.volumeCredits, 0);
+
+const totalAmount = (data) =>
+  data.performances.reduce((total, p) => total + p.amount, 0);
+
+const renderPlainText = (data, plays) => {
+  let result = `청구 내역 (고객명: ${data.customer})\n`;
+  for (let perf of data.performances) {
+    result += `${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n`;
   }
-  return volumeCredits;
+
+  result += `총액: ${usd(data.totalAmount)}\n`;
+  result += `적립 포인트: ${data.volumeCredits}점\n`;
+
+  return result;
+};
+
+const enrichPerformance = (aPerformance) => {
+  const result = Object.assign({}, aPerformance);
+  result.play = playFor(result);
+  result.amount = amountFor(result);
+  return result;
 };
 
 const statement = (invoice, plays) => {
-  let totalAmount = 0;
-  let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-  for (let perf of invoice.performances) {
-    result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${
-      perf.audience
-    }석)\n`;
-    totalAmount += amountFor(perf);
-  }
-
-  result += `총액: ${usd(totalAmount)}\n`;
-  result += `적립 포인트: ${totalVolumeCredits()}점\n`;
-
-  return result;
+  const statementData = {};
+  statementData.customer = invoice.customer;
+  statementData.performances = invoice.performances.map(enrichPerformance);
+  statementData.totalAmount = totalAmount(statementData);
+  statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+  return renderPlainText(statementData, plays);
 };
 
 statement(invoice);
