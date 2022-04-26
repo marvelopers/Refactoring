@@ -1,26 +1,31 @@
-const amountFor = (perf, play) => {
-  let thisAmount = 0;
+import invoice from "./invoices.json";
+import plays from "./plays.json";
 
-  switch (play.type) {
+const playFor = (aPerformance) => plays[aPerformance.playID];
+
+const amountFor = (aPerformance, play) => {
+  let result = 0;
+
+  switch (amountFor(perf).type) {
     case "tragedy":
       thisAmount = 40000;
-      if (perf.audience > 30) {
-        thisAmount += 1000 * (perf.audience - 30);
+      if (aPerformance.audience > 30) {
+        thisAmount += 1000 * (aPerformance.audience - 30);
       }
       break;
     case "comedy":
       thisAmount = 30000;
-      if (perf.audience > 20) {
-        thisAmount += 1000 + 500 * (perf.audience - 20);
+      if (aPerformance.audience > 20) {
+        thisAmount += 1000 + 500 * (aPerformance.audience - 20);
       }
-      thisAmount += 300 * perf.audience;
+      thisAmount += 300 * aPerformance.audience;
       break;
 
     default:
-      throw new Error(`알 수 없는 장르: ${play.type}`);
+      throw new Error(`알 수 없는 장르: ${amountFor(perf).type}`);
   }
 
-  return thisAmount;
+  return result;
 };
 
 const statement = (invoice, plays) => {
@@ -35,16 +40,14 @@ const statement = (invoice, plays) => {
   }).format;
 
   for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
-    let thisAmount = amountFor(perf, play);
-
     volumeCredits += Math.max(perf.audience - 30, 0);
-    if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+    if ("comedy" === playFor(perf).type)
+      volumeCredits += Math.floor(perf.audience / 5);
 
-    result += `${play.name}: ${format(thisAmount / 100)} (${
+    result += `${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
       perf.audience
     }석)\n`;
-    totalAmount += thisAmount;
+    totalAmount += amountFor(perf);
   }
 
   result += `총액: ${format(totalAmount / 100)}\n`;
@@ -52,3 +55,5 @@ const statement = (invoice, plays) => {
 
   return result;
 };
+
+statement(invoice);
