@@ -55,3 +55,5 @@ const totalAmount = (data) =>
 
 const totalVolumeCredits = (data) =>
   data.performances.reduce((total, p) => total + p.volumeCredits, 0);
+
+export default createStatementData;
