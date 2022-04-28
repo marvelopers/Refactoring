@@ -1,4 +1,15 @@
-// 유효범위를 벗어나는 변수가 없을 때
+type Invoice = {
+  orders: [];
+  customer: string;
+  dueDate: Date;
+};
+
+const printDetail = (invoice: Invoice, outstanding: number) => {
+  console.log(`고객명: ${invoice.customer}`);
+  console.log(`채무액: ${outstanding}`);
+  console.log(`마감일: ${invoice.dueDate.toLocaleDateString()}`);
+};
+
 function printOwing() {
   let outstanding = 0;
 
@@ -15,17 +26,11 @@ function printOwing() {
     today.getDate() + 30
   );
 
-  printDetail();
+  printDetail(invoice, outstanding);
 
   function printBanner() {
     console.log("****************");
     console.log("*****고객채무*****");
     console.log("****************");
-  }
-
-  function printDetail() {
-    console.log(`고객명: ${invoice.customer}`);
-    console.log(`채무액: ${outstanding}`);
-    console.log(`마감일: ${invoice.dueDate.toLocalDateString()}`);
   }
 }
