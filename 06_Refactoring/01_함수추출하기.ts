@@ -1,7 +1,13 @@
 type Invoice = {
-  orders: [];
+  orders: { amount: number }[];
   customer: string;
   dueDate: Date;
+};
+
+const printBanner = () => {
+  console.log("****************");
+  console.log("*****고객채무*****");
+  console.log("****************");
 };
 
 const printDetail = (invoice: Invoice, outstanding: number) => {
@@ -10,27 +16,26 @@ const printDetail = (invoice: Invoice, outstanding: number) => {
   console.log(`마감일: ${invoice.dueDate.toLocaleDateString()}`);
 };
 
-function printOwing() {
-  let outstanding = 0;
-
-  printBanner();
-
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
+const recordDueDate = (invoice: Invoice) => {
   const today = Clock.today;
   invoice.dueDate = new Date(
     today.getFullYear(),
     today.getMonth(),
     today.getDate() + 30
   );
+};
 
-  printDetail(invoice, outstanding);
-
-  function printBanner() {
-    console.log("****************");
-    console.log("*****고객채무*****");
-    console.log("****************");
+const calculateOutStanding = (invoice: Invoice) => {
+  let result = 0;
+  for (const o of invoice.orders) {
+    result += o.amount;
   }
+  return result;
+};
+
+function printOwing(invoice: Invoice) {
+  printBanner();
+  let outstanding = calculateOutStanding(invoice);
+  recordDueDate(invoice);
+  printDetail(invoice, outstanding);
 }
