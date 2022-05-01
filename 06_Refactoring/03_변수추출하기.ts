@@ -1,6 +1,7 @@
-type Order = {
+export type Order = {
   quantity: number;
   itemPrice: number;
+  basePrice: number;
 };
 
 const price = (order: Order) => {
