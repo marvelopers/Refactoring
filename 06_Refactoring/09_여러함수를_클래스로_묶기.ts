@@ -6,24 +6,39 @@ type ReadingType = {
 };
 
 const baseRate = (month: number, year: number) => {};
-const base = baseRate(aReading.month, aReading.year) * aReading.quantity;
-const taxableCharge = Math.max(0, base - taxThreshold(aReading.year));
-
-const calculateBaseCharge = (aReading: ReadingType) =>
- 
 
 let reading = { customer: "ivan", quantity: 10, month: 5, year: 2017 };
-const rawReading = acquireReading();
-const aReading = new Reading(rawReading);
-
-const baseCharge = baseRate(aReading.month, aReading.year) * aReading.quantity;
-const baseChargeAmount = calculateBaseCharge(aReading);
 
 class Reading {
-  base() {}
-  taxableCharge() {}
+  constructor(data: ReadingType) {
+    this.customer = data.customer;
+    this.quantity = data.quantity;
+    this.month = data.month;
+    this.year = data.year;
+  }
+  get customer() {
+    return this.customer;
+  }
+  get quantity() {
+    return this.quantity;
+  }
+  get month() {
+    return this.month;
+  }
+  get year() {
+    return this.year;
+  }
 
-  get calculateBaseCharge() {
-    baseRate(aReading.month, aReading.year) * aReading.quantity;
+  taxableCharge() {
+    return Math.max(0, aReading.baseCharge - taxThreshold(aReading.year));
+  }
+
+  get baseCharge() {
+    return baseRate(this.month, this.year) * this.quantity;
   }
 }
+
+const rawReading = acquireReading();
+const aReading = new Reading(rawReading);
+const taxableCharge = aReading.taxableCharge;
+const baseChargeAmount = aReading.baseCharge;
