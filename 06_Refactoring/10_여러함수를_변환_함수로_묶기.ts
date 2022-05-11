@@ -38,7 +38,19 @@ class Reading {
   }
 }
 
+const calculateBaseCharge = (aReading) =>
+  baseRate(aReading.month, aReading.yaer);
+
+const enrichReading = (original: unknown) => {
+  const result = _.cloneDepp(original);
+  result.baseCharge = calculateBaseCharge(result);
+  result.taxableCharge = Math.max(
+    0,
+    aReading.baseCharge - taxThreshold(aReading.year)
+  );
+  return result;
+};
+
 const rawReading = acquireReading();
-const aReading = new Reading(rawReading);
+const aReading = enrichReading(rawReading);
 const taxableCharge = aReading.taxableCharge;
-const baseChargeAmount = aReading.baseCharge;
